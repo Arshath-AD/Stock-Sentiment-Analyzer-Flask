@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Stock Predictor</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #5e9eff; padding: 50px; text-align: center; }
+        .container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
+        h1 { margin-bottom: 10px; color: #333; }
+        p { color: #666; margin-bottom: 20px; }
+        
+        select, button { padding: 12px; width: 100%; margin-top: 15px; font-size: 16px; border-radius: 6px; border: 1px solid #ddd; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; font-weight: bold; transition: background 0.3s; }
+        button:hover { background-color: #0056b3; }
+        
+        .result-box { margin-top: 30px; padding: 25px; border-radius: 8px; animation: fadeIn 0.5s; }
+        .buy { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .sell { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .hold { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        
+        .metric-row { display: flex; justify-content: space-between; margin-top: 15px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px; }
+        .metric { text-align: center; width: 48%; }
+        .metric-label { font-size: 12px; text-transform: uppercase; color: #555; letter-spacing: 1px; }
+        .metric-value { font-size: 20px; font-weight: bold; }
+
+        .loader { display: none; color: #666; margin-top: 20px; font-style: italic; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🚀 Market AI</h1>
+        <p>Real-time Stock Sentiment Analysis</p>
+
+        <form method="POST" onsubmit="document.getElementById('loading').style.display='block'">
+            <label for="stock_name" style="float: left; font-weight: bold; font-size: 14px; margin-bottom: 5px;">Select Asset:</label>
+            <select name="stock_name" id="stock_name">
+                {% for name in stocks %}
+                    <option value="{{ name }}" {% if name == selected_stock %}selected{% endif %}>{{ name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Analyze Market Data</button>
+        </form>
+
+        <div id="loading" class="loader">
+            ⚙️ Crunching 5 years of data...
+        </div>
+
+        {% if error %}
+            <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                ⚠️ {{ error }}
+            </div>
+        {% endif %}
+
+        {% if prediction %}
+            <div class="result-box {% if prediction == 'BUY' %}buy{% elif prediction == 'SELL' %}sell{% else %}hold{% endif %}">
+                <div style="font-size: 14px; opacity: 0.8;">Recommendation</div>
+                <div style="font-size: 32px; font-weight: 800; margin: 5px 0;">{{ prediction }}</div>
+                
+                <div class="metric-row">
+                    <div class="metric">
+                        <div class="metric-label">Model Accuracy</div>
+                        <div class="metric-value">{{ accuracy }}</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Algorithm</div>
+                        <div class="metric-value">Random Forest</div>
+                    </div>
+                </div>
+            </div>
+            
+            <p style="font-size: 11px; margin-top: 15px; color: #999;">
+                *Accuracy calculated on historical test split (last 20% of data). <br>
+                Past performance is not indicative of future results.
+            </p>
+        {% endif %} 
+        </div>
+
+</body>
+</html>
